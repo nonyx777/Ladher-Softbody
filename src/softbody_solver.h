@@ -75,9 +75,8 @@ public:
     
     void set_edge_compliance(double p_compliance);
     void set_volume_compliance(double p_compliance);
-    
-    // Optimization: process multiple tetrahedra with SIMD
-    void solve_volumes_simd(double compliance, double dt);
+
+    void set_inv_mass(const PackedFloat32Array &p_inv_mass);
 };
 
 } // namespace godot

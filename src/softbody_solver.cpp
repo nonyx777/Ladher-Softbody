@@ -32,12 +32,17 @@ void SoftBodySolver::_bind_methods() {
     ClassDB::bind_method(D_METHOD("post_solve", "dt"), &SoftBodySolver::post_solve);
     ClassDB::bind_method(D_METHOD("solve", "dt"), &SoftBodySolver::solve);
     
-    ClassDB::bind_method(D_METHOD("set_pos"), &SoftBodySolver::set_pos);
+    ClassDB::bind_method(D_METHOD("set_pos", "pos"), &SoftBodySolver::set_pos);
     ClassDB::bind_method(D_METHOD("get_pos"), &SoftBodySolver::get_pos);
-    ClassDB::bind_method(D_METHOD("set_edge_ids"), &SoftBodySolver::set_edge_ids);
-    ClassDB::bind_method(D_METHOD("set_tet_ids"), &SoftBodySolver::set_tet_ids);
-    ClassDB::bind_method(D_METHOD("set_edge_compliance"), &SoftBodySolver::set_edge_compliance);
-    ClassDB::bind_method(D_METHOD("set_volume_compliance"), &SoftBodySolver::set_volume_compliance);
+    ClassDB::bind_method(D_METHOD("set_edge_ids", "edge_ids"), &SoftBodySolver::set_edge_ids);
+    ClassDB::bind_method(D_METHOD("set_tet_ids", "tet_ids"), &SoftBodySolver::set_tet_ids);
+    ClassDB::bind_method(D_METHOD("set_edge_compliance", "compliance"), &SoftBodySolver::set_edge_compliance);
+    ClassDB::bind_method(D_METHOD("set_volume_compliance", "compliance"), &SoftBodySolver::set_volume_compliance);
+    ClassDB::bind_method(D_METHOD("set_invmass", "inv_mass"), &SoftBodySolver::set_invmass);
+    ClassDB::add_property("SoftBodySolver", PropertyInfo(Variant::FLOAT, "edge_compliance"), 
+                          "set_edge_compliance", "get_edge_compliance");
+    ClassDB::add_property("SoftBodySolver", PropertyInfo(Variant::FLOAT, "volume_compliance"), 
+                          "set_volume_compliance", "get_volume_compliance");
 }
 
 void SoftBodySolver::set_pos(const PackedVector3Array &p_pos) {
@@ -65,6 +70,11 @@ void SoftBodySolver::set_edge_compliance(double p_compliance) {
 
 void SoftBodySolver::set_volume_compliance(double p_compliance) {
     volume_compliance = p_compliance;
+}
+
+void SoftBodySolver::set_inv_mass(const PackedFloat32Array &p_inv_mass) {
+    inv_mass = p_inv_mass;
+    inv_mass_ptr = inv_mass.ptrw();
 }
 
 void SoftBodySolver::set_edge_ids(const PackedInt32Array &p_ids) {
