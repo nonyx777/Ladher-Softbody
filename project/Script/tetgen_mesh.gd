@@ -236,7 +236,7 @@ func create_surface_mesh() -> ArrayMesh:
 	
 	# Normalize normals
 	for i in range(normals.size()):
-		normals[i] = -normals[i].normalized()
+		normals[i] = normals[i].normalized()
 	
 	arrays[Mesh.ARRAY_NORMAL] = normals
 	
@@ -293,7 +293,7 @@ func update_mesh(vert: PackedVector3Array) -> ArrayMesh:
 	
 	# Normalize normals
 	for i in range(normals.size()):
-		normals[i] = -normals[i].normalized()
+		normals[i] = normals[i].normalized()
 	
 	arrays[Mesh.ARRAY_NORMAL] = normals
 	

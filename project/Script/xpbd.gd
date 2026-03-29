@@ -7,7 +7,8 @@ var mesh_instance: MeshInstance3D
 
 func _ready():
 	tet_mesh = TetGenMesh.new()
-	tet_mesh.load_from_base_name("res://Mesh/LowPoly/Suzanne")
+	#tet_mesh.load_from_base_name("res://Mesh/Suzanne/LowPoly/Suzanne")
+	tet_mesh.load_from_base_name("res://Mesh/StanfordBunny/StanfordBunny")
 	
 	tet_array_constructor = TetArrayConstructor.new()
 	var edge_ids: PackedInt32Array = tet_array_constructor.construct_edge(tet_mesh.edges)
