@@ -39,6 +39,9 @@ void SoftBodySolver::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_edge_compliance", "compliance"), &SoftBodySolver::set_edge_compliance);
     ClassDB::bind_method(D_METHOD("set_volume_compliance", "compliance"), &SoftBodySolver::set_volume_compliance);
     ClassDB::bind_method(D_METHOD("set_inv_mass", "inv_mass"), &SoftBodySolver::set_inv_mass);
+    ClassDB::bind_method(D_METHOD("compute_edge_rest_lengths"), &SoftBodySolver::compute_edge_rest_lengths);
+    ClassDB::bind_method(D_METHOD("compute_tet_rest_volumes"), &SoftBodySolver::compute_tet_rest_volumes);
+
     ClassDB::add_property("SoftBodySolver", PropertyInfo(Variant::FLOAT, "edge_compliance"), 
                           "set_edge_compliance", "get_edge_compliance");
     ClassDB::add_property("SoftBodySolver", PropertyInfo(Variant::FLOAT, "volume_compliance"), 
