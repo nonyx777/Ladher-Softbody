@@ -158,10 +158,7 @@ void SoftBodySolver::solve_volumes(double compliance, double dt) {
             Vector3 v1 = p1 - p0;
             Vector3 v2 = p2 - p0;
             
-            Vector3 grad;
-            grad.x = (v1.y * v2.z - v1.z * v2.y) * inv_sixth;
-            grad.y = (v1.z * v2.x - v1.x * v2.z) * inv_sixth;
-            grad.z = (v1.x * v2.y - v1.y * v2.x) * inv_sixth;
+            Vector3 grad = v1.cross(v2) * inv_sixth;
             
             grads[j] = grad;
             w += inv_mass_ptr[tet_ids_ptr[i + j]] * grad.length_squared();
@@ -227,9 +224,10 @@ void SoftBodySolver::pre_solve(double dt, Vector3 force) {
 }
 
 void SoftBodySolver::post_solve(double dt) {
+    const float inv_dt = 1.0 / dt;
     for (int i = 0; i < num_particles; i++) {
         if (inv_mass_ptr[i] == 0.0f) continue;
-        velocity_ptr[i] = (pos_ptr[i] - prev_pos_ptr[i]) * dt;
+        velocity_ptr[i] = (pos_ptr[i] - prev_pos_ptr[i]) * inv_dt;
     }
 }
 
