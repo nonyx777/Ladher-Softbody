@@ -10,7 +10,6 @@ config_version=5
 
 [application]
 
-config/name="godot cpp template"
-run/main_scene="uid://dh0oj81pufivs"
+config/name="Ladher-Softbody"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
