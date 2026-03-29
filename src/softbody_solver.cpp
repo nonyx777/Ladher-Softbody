@@ -37,7 +37,9 @@ void SoftBodySolver::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_edge_ids", "edge_ids"), &SoftBodySolver::set_edge_ids);
     ClassDB::bind_method(D_METHOD("set_tet_ids", "tet_ids"), &SoftBodySolver::set_tet_ids);
     ClassDB::bind_method(D_METHOD("set_edge_compliance", "compliance"), &SoftBodySolver::set_edge_compliance);
+    ClassDB::bind_method(D_METHOD("get_edge_compliance"), &SoftBodySolver::get_edge_compliance);
     ClassDB::bind_method(D_METHOD("set_volume_compliance", "compliance"), &SoftBodySolver::set_volume_compliance);
+    ClassDB::bind_method(D_METHOD("get_volume_compliance"), &SoftBodySolver::get_volume_compliance);
     ClassDB::bind_method(D_METHOD("set_inv_mass", "inv_mass"), &SoftBodySolver::set_inv_mass);
     ClassDB::bind_method(D_METHOD("compute_edge_rest_lengths"), &SoftBodySolver::compute_edge_rest_lengths);
     ClassDB::bind_method(D_METHOD("compute_tet_rest_volumes"), &SoftBodySolver::compute_tet_rest_volumes);
@@ -71,8 +73,16 @@ void SoftBodySolver::set_edge_compliance(double p_compliance) {
     edge_compliance = p_compliance;
 }
 
+double SoftBodySolver::get_edge_compliance() const {
+    return edge_compliance;
+}
+
 void SoftBodySolver::set_volume_compliance(double p_compliance) {
     volume_compliance = p_compliance;
+}
+
+double SoftBodySolver::get_volume_compliance() const {
+    return volume_compliance;
 }
 
 void SoftBodySolver::set_inv_mass(const PackedFloat32Array &p_inv_mass) {

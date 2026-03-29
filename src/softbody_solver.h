@@ -74,7 +74,9 @@ public:
     void set_tet_ids(const PackedInt32Array &p_ids);
     
     void set_edge_compliance(double p_compliance);
+    double get_edge_compliance() const;
     void set_volume_compliance(double p_compliance);
+    double get_volume_compliance() const;
 
     void set_inv_mass(const PackedFloat32Array &p_inv_mass);
 };
