@@ -266,7 +266,7 @@ func update_mesh(vert: PackedVector3Array) -> ArrayMesh:
 	
 	# Calculate normals
 	var normals = PackedVector3Array()
-	normals.resize(vertices.size())
+	normals.resize(vert.size())
 	for i in range(normals.size()):
 		normals[i] = Vector3.ZERO
 	
@@ -276,9 +276,9 @@ func update_mesh(vert: PackedVector3Array) -> ArrayMesh:
 		var i1 = indices[i+1]
 		var i2 = indices[i+2]
 		
-		var v0 = vertices[i0]
-		var v1 = vertices[i1]
-		var v2 = vertices[i2]
+		var v0 = vert[i0]
+		var v1 = vert[i1]
+		var v2 = vert[i2]
 		
 		var normal = (v1 - v0).cross(v2 - v0)
 		
