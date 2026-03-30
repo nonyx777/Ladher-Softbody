@@ -10,7 +10,8 @@ ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
 sky_material = SubResource("ProceduralSkyMaterial_jegph")
 
 [sub_resource type="Environment" id="Environment_xm732"]
-background_mode = 2
+background_mode = 1
+background_color = Color(0.266575, 0.266575, 0.266575, 1)
 sky = SubResource("Sky_oabi1")
 tonemap_mode = 2
 glow_enabled = true
@@ -34,7 +35,7 @@ script = ExtResource("1_jegph")
 environment = SubResource("Environment_xm732")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+transform = Transform3D(-0.771563, -0.593035, 0.230217, 0.607966, -0.580869, 0.541266, -0.187264, 0.557585, 0.808722, 0, 0, 0)
 shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
