@@ -1,40 +1,78 @@
 extends Node
 
-var solver: SoftBodySolver
-var tet_mesh: TetGenMesh
-var tet_array_constructor: TetArrayConstructor
-var mesh_instance: MeshInstance3D
+var bunny_solver: SoftBodySolver
+var bunny_tet_mesh: TetGenMesh
+var bunny_tet_array_constructor: TetArrayConstructor
+var bunny_mesh_instance: MeshInstance3D
+
+var suzanne_solver: SoftBodySolver
+var suzanne_tet_mesh: TetGenMesh
+var suzanne_tet_array_constructor: TetArrayConstructor
+var suzanne_mesh_instance: MeshInstance3D
+
+func bunny_init() -> void:
+	bunny_tet_mesh = TetGenMesh.new()
+	bunny_tet_mesh.load_from_base_name("res://Mesh/StanfordBunny/StanfordBunny")
+	
+	bunny_tet_array_constructor = TetArrayConstructor.new()
+	var bunny_edge_ids: PackedInt32Array = bunny_tet_array_constructor.construct_edge(bunny_tet_mesh.edges)
+	var bunny_tet_ids: PackedInt32Array = bunny_tet_array_constructor.construct_tet(bunny_tet_mesh.tetrahedra)
+	
+	bunny_solver = SoftBodySolver.new()
+	add_child(bunny_solver)
+	
+	bunny_solver.set_pos(bunny_tet_mesh.vertices)
+	bunny_solver.set_edge_ids(bunny_edge_ids)
+	bunny_solver.set_tet_ids(bunny_tet_ids)
+	
+	var bunny_inv_mass: PackedFloat32Array = PackedFloat32Array()
+	bunny_inv_mass.resize(bunny_solver.get_pos().size())
+	bunny_inv_mass.fill(0.5)
+	bunny_solver.set_inv_mass(bunny_inv_mass)
+	
+	var bunny_surface_mesh = bunny_tet_mesh.create_surface_mesh()
+	bunny_mesh_instance = MeshInstance3D.new()
+	bunny_mesh_instance.mesh = bunny_surface_mesh
+	add_child(bunny_mesh_instance)
+	
+	bunny_solver.compute_edge_rest_lengths()
+	bunny_solver.compute_tet_rest_volumes()
+	bunny_solver.set_edge_compliance(0.0)
+	bunny_solver.set_volume_compliance(0.0)
+
+func suzanne_init() -> void:
+	suzanne_tet_mesh = TetGenMesh.new()
+	suzanne_tet_mesh.load_from_base_name("res://Mesh/Suzanne/LowPoly/Suzanne")
+	
+	suzanne_tet_array_constructor = TetArrayConstructor.new()
+	var suzanne_edge_ids: PackedInt32Array = suzanne_tet_array_constructor.construct_edge(suzanne_tet_mesh.edges)
+	var suzanne_tet_ids: PackedInt32Array = suzanne_tet_array_constructor.construct_tet(suzanne_tet_mesh.tetrahedra)
+	
+	suzanne_solver = SoftBodySolver.new()
+	add_child(suzanne_solver)
+	
+	suzanne_solver.set_pos(suzanne_tet_mesh.vertices)
+	suzanne_solver.set_edge_ids(suzanne_edge_ids)
+	suzanne_solver.set_tet_ids(suzanne_tet_ids)
+	
+	var suzanne_inv_mass: PackedFloat32Array = PackedFloat32Array()
+	suzanne_inv_mass.resize(suzanne_solver.get_pos().size())
+	suzanne_inv_mass.fill(0.5)
+	suzanne_solver.set_inv_mass(suzanne_inv_mass)
+	
+	var suzanne_surface_mesh = suzanne_tet_mesh.create_surface_mesh()
+	suzanne_mesh_instance = MeshInstance3D.new()
+	suzanne_mesh_instance.mesh = suzanne_surface_mesh
+	add_child(suzanne_mesh_instance)
+	
+	suzanne_solver.compute_edge_rest_lengths()
+	suzanne_solver.compute_tet_rest_volumes()
+	suzanne_solver.set_edge_compliance(0.0)
+	suzanne_solver.set_volume_compliance(0.0)
 
 func _ready():
-	tet_mesh = TetGenMesh.new()
-	#tet_mesh.load_from_base_name("res://Mesh/Suzanne/LowPoly/Suzanne")
-	tet_mesh.load_from_base_name("res://Mesh/StanfordBunny/StanfordBunny")
-	
-	tet_array_constructor = TetArrayConstructor.new()
-	var edge_ids: PackedInt32Array = tet_array_constructor.construct_edge(tet_mesh.edges)
-	var tet_ids: PackedInt32Array = tet_array_constructor.construct_tet(tet_mesh.tetrahedra)
-	
-	solver = SoftBodySolver.new()
-	add_child(solver)
-	
-	solver.set_pos(tet_mesh.vertices)
-	solver.set_edge_ids(edge_ids)
-	solver.set_tet_ids(tet_ids)
-	
-	var inv_mass: PackedFloat32Array = PackedFloat32Array()
-	inv_mass.resize(solver.get_pos().size())
-	inv_mass.fill(0.5)
-	solver.set_inv_mass(inv_mass)
-	
-	var surface_mesh = tet_mesh.create_surface_mesh()
-	mesh_instance = MeshInstance3D.new()
-	mesh_instance.mesh = surface_mesh
-	add_child(mesh_instance)
-	
-	solver.compute_edge_rest_lengths()
-	solver.compute_tet_rest_volumes()
-	solver.set_edge_compliance(0.0)
-	solver.set_volume_compliance(0.0)
+	bunny_init()
+	suzanne_init()
 
 func _process(delta: float):
 	var force: Vector3 = Vector3(0, -5, 0)
@@ -44,9 +82,16 @@ func _process(delta: float):
 	var sub_dt: float = dt / substeps
 	
 	for step in range(substeps):
-		solver.pre_solve(sub_dt, force)
-		solver.solve(sub_dt)
-		solver.post_solve(sub_dt)
+		bunny_solver.pre_solve(sub_dt, force)
+		bunny_solver.solve(sub_dt)
+		bunny_solver.post_solve(sub_dt)
+		
+		suzanne_solver.pre_solve(sub_dt, force)
+		suzanne_solver.solve(sub_dt)
+		suzanne_solver.post_solve(sub_dt)
 	
-	var updated_mesh: Mesh = tet_mesh.update_mesh(solver.get_pos())
-	mesh_instance.mesh = updated_mesh
+	var bunny_updated_mesh: Mesh = bunny_tet_mesh.update_mesh(bunny_solver.get_pos())
+	bunny_mesh_instance.mesh = bunny_updated_mesh
+	
+	var suzanne_updated_mesh: Mesh = suzanne_tet_mesh.update_mesh(suzanne_solver.get_pos())
+	suzanne_mesh_instance.mesh = suzanne_updated_mesh

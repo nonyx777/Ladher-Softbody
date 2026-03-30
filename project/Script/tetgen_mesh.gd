@@ -228,7 +228,7 @@ func create_surface_mesh() -> ArrayMesh:
 		if normal.length() < 0.0001:
 			continue
 			
-		normal = normal.normalized()
+		normal = -normal.normalized()
 		
 		normals[i0] += normal
 		normals[i1] += normal
@@ -285,7 +285,7 @@ func update_mesh(vert: PackedVector3Array) -> ArrayMesh:
 		if normal.length() < 0.0001:
 			continue
 			
-		normal = normal.normalized()
+		normal = -normal.normalized()
 		
 		normals[i0] += normal
 		normals[i1] += normal
