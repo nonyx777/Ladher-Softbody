@@ -10,6 +10,8 @@ var suzanne_tet_mesh: TetGenMesh
 var suzanne_tet_array_constructor: TetArrayConstructor
 var suzanne_mesh_instance: MeshInstance3D
 
+var push_force: Vector3 = Vector3(0, 0, 0)
+
 func bunny_init() -> void:
 	bunny_tet_mesh = TetGenMesh.new()
 	bunny_tet_mesh.load_from_base_name("res://Mesh/StanfordBunny/StanfordBunny")
@@ -75,8 +77,20 @@ func _ready():
 	suzanne_init()
 
 func _process(delta: float):
-	var force: Vector3 = Vector3(0, -5, 0)
-	var dt: float = 0.05
+	push_force *= 0.0
+	if Input.is_key_pressed(KEY_S):
+		push_force += Vector3(2, 2, 0)
+	if Input.is_key_pressed(KEY_W):
+		push_force += Vector3(-2, 2, 0)
+	if Input.is_key_pressed(KEY_D):
+		push_force += Vector3(0, 2, -2)
+	if Input.is_key_pressed(KEY_A):
+		push_force += Vector3(0, 2, 2)
+	if Input.is_key_pressed(KEY_SPACE):
+		push_force += Vector3(0, 10, 0)
+	
+	var force: Vector3 = Vector3(0, -5, 0) + push_force
+	var dt: float = 0.04
 	
 	var substeps: float = 10
 	var sub_dt: float = dt / substeps
