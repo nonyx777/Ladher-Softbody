@@ -215,10 +215,30 @@ void SoftBodySolver::pre_solve(double dt, Vector3 force) {
         prev_pos_ptr[i] = pos_ptr[i];
         pos_ptr[i] += velocity_ptr[i] * dt;
         
-        // Simple ground collision
+        // Containment collision
         if (pos_ptr[i].y < -10.0) {
             pos_ptr[i] = prev_pos_ptr[i];
             pos_ptr[i].y = -10.0;
+        }
+        if (pos_ptr[i].y > 5.0) {
+            pos_ptr[i] = prev_pos_ptr[i];
+            pos_ptr[i].y = 5.0;
+        }
+        if (pos_ptr[i].x < -5.0) {
+            pos_ptr[i] = prev_pos_ptr[i];
+            pos_ptr[i].x = -5.0;
+        }
+        if (pos_ptr[i].x > 5.0) {
+            pos_ptr[i] = prev_pos_ptr[i];
+            pos_ptr[i].x = 5.0;
+        }
+        if (pos_ptr[i].z < -5.0) {
+            pos_ptr[i] = prev_pos_ptr[i];
+            pos_ptr[i].z = -5.0;
+        }
+        if (pos_ptr[i].z > 5.0) {
+            pos_ptr[i] = prev_pos_ptr[i];
+            pos_ptr[i].z = 5.0;
         }
     }
 }

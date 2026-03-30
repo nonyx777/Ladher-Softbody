@@ -15,15 +15,17 @@ sky = SubResource("Sky_oabi1")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_jegph"]
-size = Vector3(10, 1, 10)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jegph"]
 albedo_color = Color(0.44149, 0.212144, 0.0763373, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_oabi1"]
 material = SubResource("StandardMaterial3D_jegph")
 size = Vector3(10, 1, 10)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jegph"]
+lightmap_size_hint = Vector2i(104, 207)
+flip_faces = true
+size = Vector3(10, 15.14, 10)
 
 [node name="XPBD" type="Node3D"]
 script = ExtResource("1_jegph")
@@ -36,13 +38,16 @@ transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -
 shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.145259, -0.13595, 0.980009, 0, 0.990515, 0.137407, -0.989394, -0.0199597, 0.143881, 14.2786, -4.22021, 2.2482)
+transform = Transform3D(0.544639, -0.105839, 0.831966, 0, 0.992005, 0.126199, -0.838671, -0.0687328, 0.540284, 15.0221, -0.584764, 8.49013)
 
-[node name="Floor" type="StaticBody3D" parent="."]
+[node name="Containment" type="Node3D" parent="."]
+
+[node name="Floor" type="MeshInstance3D" parent="Containment"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -10.646, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
-shape = SubResource("BoxShape3D_jegph")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
 mesh = SubResource("BoxMesh_oabi1")
+skeleton = NodePath("")
+
+[node name="Wall" type="MeshInstance3D" parent="Containment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.57906, 0)
+mesh = SubResource("BoxMesh_jegph")
+skeleton = NodePath("../..")
