@@ -11,7 +11,6 @@ sky_material = SubResource("ProceduralSkyMaterial_jegph")
 
 [sub_resource type="Environment" id="Environment_xm732"]
 background_mode = 1
-background_color = Color(0.266575, 0.266575, 0.266575, 1)
 sky = SubResource("Sky_oabi1")
 tonemap_mode = 2
 glow_enabled = true

@@ -10,6 +10,11 @@ var suzanne_tet_mesh: TetGenMesh
 var suzanne_tet_array_constructor: TetArrayConstructor
 var suzanne_mesh_instance: MeshInstance3D
 
+var armadillo_solver: SoftBodySolver
+var armadillo_tet_mesh: TetGenMesh
+var armadillo_tet_array_constructor: TetArrayConstructor
+var armadillo_mesh_instance: MeshInstance3D
+
 var push_force: Vector3 = Vector3(0, 0, 0)
 var dt: float = (1.0 / 60.0)
 
@@ -70,12 +75,43 @@ func suzanne_init() -> void:
 	
 	suzanne_solver.compute_edge_rest_lengths()
 	suzanne_solver.compute_tet_rest_volumes()
-	suzanne_solver.set_edge_compliance(0.00001)
+	suzanne_solver.set_edge_compliance(0.0)
 	suzanne_solver.set_volume_compliance(0.0)
+
+func armadillo_init():
+	armadillo_tet_mesh = TetGenMesh.new()
+	armadillo_tet_mesh.load_from_base_name("res://Mesh/StanfordArmadillo/StanfordArmadillo")
+	
+	armadillo_tet_array_constructor = TetArrayConstructor.new()
+	var armadillo_edge_ids: PackedInt32Array = armadillo_tet_array_constructor.construct_edge(armadillo_tet_mesh.edges)
+	var armadillo_tet_ids: PackedInt32Array = armadillo_tet_array_constructor.construct_tet(armadillo_tet_mesh.tetrahedra)
+	
+	armadillo_solver = SoftBodySolver.new()
+	add_child(armadillo_solver)
+	
+	armadillo_solver.set_pos(armadillo_tet_mesh.vertices)
+	armadillo_solver.set_edge_ids(armadillo_edge_ids)
+	armadillo_solver.set_tet_ids(armadillo_tet_ids)
+	
+	var armadillo_inv_mass: PackedFloat32Array = PackedFloat32Array()
+	armadillo_inv_mass.resize(armadillo_solver.get_pos().size())
+	armadillo_inv_mass.fill(3)
+	armadillo_solver.set_inv_mass(armadillo_inv_mass)
+	
+	var armadillo_surface_mesh = armadillo_tet_mesh.create_surface_mesh()
+	armadillo_mesh_instance = MeshInstance3D.new()
+	armadillo_mesh_instance.mesh = armadillo_surface_mesh
+	add_child(armadillo_mesh_instance)
+	
+	armadillo_solver.compute_edge_rest_lengths()
+	armadillo_solver.compute_tet_rest_volumes()
+	armadillo_solver.set_edge_compliance(0.0)
+	armadillo_solver.set_volume_compliance(0.0)
 
 func _ready():
 	bunny_init()
 	suzanne_init()
+	armadillo_init()
 
 func _process(delta: float):
 	push_force *= 0.0
@@ -87,8 +123,10 @@ func _process(delta: float):
 		push_force += Vector3(0, 5, -5)
 	if Input.is_key_pressed(KEY_A):
 		push_force += Vector3(0, 5, 5)
+		
+	push_force = push_force.normalized() * 5
 	if Input.is_key_pressed(KEY_SPACE):
-		push_force += Vector3(0, 15, 0)
+		push_force += Vector3(0, 10, 0)
 	
 	var force: Vector3 = Vector3(0, -9.8, 0) + push_force
 	
@@ -103,9 +141,16 @@ func _process(delta: float):
 		suzanne_solver.pre_solve(sub_dt, force)
 		suzanne_solver.solve(sub_dt)
 		suzanne_solver.post_solve(sub_dt)
+		
+		armadillo_solver.pre_solve(sub_dt, force)
+		armadillo_solver.solve(sub_dt)
+		armadillo_solver.post_solve(sub_dt)
 	
 	var bunny_updated_mesh: Mesh = bunny_tet_mesh.update_mesh(bunny_solver.get_pos())
 	bunny_mesh_instance.mesh = bunny_updated_mesh
 	
 	var suzanne_updated_mesh: Mesh = suzanne_tet_mesh.update_mesh(suzanne_solver.get_pos())
 	suzanne_mesh_instance.mesh = suzanne_updated_mesh
+	
+	var armadillo_updated_mesh: Mesh = armadillo_tet_mesh.update_mesh(armadillo_solver.get_pos())
+	armadillo_mesh_instance.mesh = armadillo_updated_mesh
