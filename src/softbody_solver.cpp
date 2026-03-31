@@ -41,6 +41,7 @@ void SoftBodySolver::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_volume_compliance", "compliance"), &SoftBodySolver::set_volume_compliance);
     ClassDB::bind_method(D_METHOD("get_volume_compliance"), &SoftBodySolver::get_volume_compliance);
     ClassDB::bind_method(D_METHOD("set_inv_mass", "inv_mass"), &SoftBodySolver::set_inv_mass);
+    ClassDB::bind_method(D_METHOD("get_inv_mass"), &SoftBodySolver::get_inv_mass);
     ClassDB::bind_method(D_METHOD("compute_edge_rest_lengths"), &SoftBodySolver::compute_edge_rest_lengths);
     ClassDB::bind_method(D_METHOD("compute_tet_rest_volumes"), &SoftBodySolver::compute_tet_rest_volumes);
 
@@ -88,6 +89,10 @@ double SoftBodySolver::get_volume_compliance() const {
 void SoftBodySolver::set_inv_mass(const PackedFloat32Array &p_inv_mass) {
     inv_mass = p_inv_mass;
     inv_mass_ptr = inv_mass.ptrw();
+}
+
+PackedFloat32Array SoftBodySolver::get_inv_mass() const {
+    return inv_mass;
 }
 
 void SoftBodySolver::set_edge_ids(const PackedInt32Array &p_ids) {
@@ -211,7 +216,8 @@ void SoftBodySolver::pre_solve(double dt, Vector3 force) {
     for (int i = 0; i < num_particles; i++) {
         if (inv_mass_ptr[i] == 0.0f) continue;
         
-        velocity_ptr[i] += force * dt;
+        Vector3 a = force * inv_mass_ptr[i];
+        velocity_ptr[i] += a * dt;
         prev_pos_ptr[i] = pos_ptr[i];
         pos_ptr[i] += velocity_ptr[i] * dt;
         

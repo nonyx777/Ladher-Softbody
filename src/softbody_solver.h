@@ -79,6 +79,7 @@ public:
     double get_volume_compliance() const;
 
     void set_inv_mass(const PackedFloat32Array &p_inv_mass);
+    PackedFloat32Array get_inv_mass() const;
 };
 
 } // namespace godot

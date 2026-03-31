@@ -42,6 +42,11 @@ func bunny_init() -> void:
 	bunny_solver.compute_tet_rest_volumes()
 	bunny_solver.set_edge_compliance(0.0)
 	bunny_solver.set_volume_compliance(0.0)
+	
+	var inv_mass: PackedFloat32Array = PackedFloat32Array()
+	inv_mass.resize(bunny_solver.get_pos().size())
+	inv_mass.fill(1)
+	bunny_solver.set_inv_mass(inv_mass)
 
 func suzanne_init() -> void:
 	suzanne_tet_mesh = TetGenMesh.new()
@@ -72,6 +77,11 @@ func suzanne_init() -> void:
 	suzanne_solver.compute_tet_rest_volumes()
 	suzanne_solver.set_edge_compliance(0.00001)
 	suzanne_solver.set_volume_compliance(0.0)
+	
+	var inv_mass: PackedFloat32Array = PackedFloat32Array()
+	inv_mass.resize(suzanne_solver.get_pos().size())
+	inv_mass.fill(1)
+	suzanne_solver.set_inv_mass(inv_mass)
 
 func _ready():
 	bunny_init()
