@@ -30,7 +30,7 @@ func bunny_init() -> void:
 	
 	var bunny_inv_mass: PackedFloat32Array = PackedFloat32Array()
 	bunny_inv_mass.resize(bunny_solver.get_pos().size())
-	bunny_inv_mass.fill(0.5)
+	bunny_inv_mass.fill(3)
 	bunny_solver.set_inv_mass(bunny_inv_mass)
 	
 	var bunny_surface_mesh = bunny_tet_mesh.create_surface_mesh()
@@ -42,11 +42,6 @@ func bunny_init() -> void:
 	bunny_solver.compute_tet_rest_volumes()
 	bunny_solver.set_edge_compliance(0.0)
 	bunny_solver.set_volume_compliance(0.0)
-	
-	var inv_mass: PackedFloat32Array = PackedFloat32Array()
-	inv_mass.resize(bunny_solver.get_pos().size())
-	inv_mass.fill(1)
-	bunny_solver.set_inv_mass(inv_mass)
 
 func suzanne_init() -> void:
 	suzanne_tet_mesh = TetGenMesh.new()
@@ -65,7 +60,7 @@ func suzanne_init() -> void:
 	
 	var suzanne_inv_mass: PackedFloat32Array = PackedFloat32Array()
 	suzanne_inv_mass.resize(suzanne_solver.get_pos().size())
-	suzanne_inv_mass.fill(0.5)
+	suzanne_inv_mass.fill(3)
 	suzanne_solver.set_inv_mass(suzanne_inv_mass)
 	
 	var suzanne_surface_mesh = suzanne_tet_mesh.create_surface_mesh()
@@ -77,11 +72,6 @@ func suzanne_init() -> void:
 	suzanne_solver.compute_tet_rest_volumes()
 	suzanne_solver.set_edge_compliance(0.00001)
 	suzanne_solver.set_volume_compliance(0.0)
-	
-	var inv_mass: PackedFloat32Array = PackedFloat32Array()
-	inv_mass.resize(suzanne_solver.get_pos().size())
-	inv_mass.fill(1)
-	suzanne_solver.set_inv_mass(inv_mass)
 
 func _ready():
 	bunny_init()
@@ -98,9 +88,9 @@ func _process(delta: float):
 	if Input.is_key_pressed(KEY_A):
 		push_force += Vector3(0, 5, 5)
 	if Input.is_key_pressed(KEY_SPACE):
-		push_force += Vector3(0, 35, 0)
+		push_force += Vector3(0, 15, 0)
 	
-	var force: Vector3 = Vector3(0, -30, 0) + push_force
+	var force: Vector3 = Vector3(0, -9.8, 0) + push_force
 	
 	var substeps: float = 10
 	var sub_dt: float = dt / substeps
