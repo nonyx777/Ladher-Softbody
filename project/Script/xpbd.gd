@@ -116,17 +116,17 @@ func _ready():
 func _process(delta: float):
 	push_force *= 0.0
 	if Input.is_key_pressed(KEY_S):
-		push_force += Vector3(5, 5, 0)
+		push_force += Vector3(5, 0, 0)
 	if Input.is_key_pressed(KEY_W):
-		push_force += Vector3(-5, 5, 0)
+		push_force += Vector3(-5, 0, 0)
 	if Input.is_key_pressed(KEY_D):
-		push_force += Vector3(0, 5, -5)
+		push_force += Vector3(0, 0, -5)
 	if Input.is_key_pressed(KEY_A):
-		push_force += Vector3(0, 5, 5)
+		push_force += Vector3(0, 0, 5)
 		
 	push_force = push_force.normalized() * 5
 	if Input.is_key_pressed(KEY_SPACE):
-		push_force += Vector3(0, 10, 0)
+		push_force += Vector3(0, 12, 0)
 	
 	var force: Vector3 = Vector3(0, -9.8, 0) + push_force
 	
