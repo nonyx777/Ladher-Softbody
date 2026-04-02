@@ -108,6 +108,8 @@ func armadillo_init():
 	armadillo_solver.set_edge_compliance(0.0)
 	armadillo_solver.set_volume_compliance(0.0)
 
+
+
 func _ready():
 	bunny_init()
 	suzanne_init()
@@ -154,3 +156,9 @@ func _process(delta: float):
 	
 	var armadillo_updated_mesh: Mesh = armadillo_tet_mesh.update_mesh(armadillo_solver.get_pos())
 	armadillo_mesh_instance.mesh = armadillo_updated_mesh
+
+
+func _on_compliance_value_changed(value: float) -> void:
+	suzanne_solver.set_edge_compliance(value)
+	bunny_solver.set_edge_compliance(value)
+	armadillo_solver.set_edge_compliance(value)
