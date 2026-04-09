@@ -52,20 +52,33 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.57906, 0)
 mesh = SubResource("BoxMesh_jegph")
 skeleton = NodePath("../..")
 
-[node name="Control Texts" type="TextEdit" parent="."]
-offset_right = 156.0
-offset_bottom = 149.0
-theme_override_colors/background_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 30
+[node name="Control" type="Control" parent="."]
+clip_contents = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="Control"]
+layout_mode = 1
+offset_left = 17.39
+offset_right = 17.39
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control/Panel"]
+offset_right = 300.0
+offset_bottom = 184.0
+theme_override_font_sizes/normal_font_size = 41
 text = "Controls	
     - WASD
     - Space"
 
-[node name="Compliance" type="HSlider" parent="."]
+[node name="Compliance" type="HSlider" parent="Control/Panel"]
 offset_top = 149.0
-offset_right = 156.0
-offset_bottom = 178.0
+offset_right = 300.0
+offset_bottom = 234.0
 max_value = 0.003
 step = 0.001
 
-[connection signal="value_changed" from="Compliance" to="." method="_on_compliance_value_changed"]
+[connection signal="value_changed" from="Control/Panel/Compliance" to="." method="_on_compliance_value_changed"]
