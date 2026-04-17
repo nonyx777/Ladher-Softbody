@@ -67,6 +67,7 @@ offset_left = 17.39
 offset_right = 17.39
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Control/Panel"]
+layout_mode = 0
 offset_right = 300.0
 offset_bottom = 184.0
 theme_override_font_sizes/normal_font_size = 41
@@ -75,10 +76,22 @@ text = "Controls
     - Space"
 
 [node name="Compliance" type="HSlider" parent="Control/Panel"]
+layout_mode = 0
 offset_top = 149.0
 offset_right = 300.0
 offset_bottom = 234.0
 max_value = 0.003
 step = 0.001
 
+[node name="Button" type="Button" parent="Control/Panel"]
+layout_mode = 0
+offset_left = 885.61
+offset_top = 470.0
+offset_right = 1024.61
+offset_bottom = 549.0
+theme_override_font_sizes/font_size = 46
+text = "Push"
+
 [connection signal="value_changed" from="Control/Panel/Compliance" to="." method="_on_compliance_value_changed"]
+[connection signal="button_down" from="Control/Panel/Button" to="." method="_on_button_button_down"]
+[connection signal="button_up" from="Control/Panel/Button" to="." method="_on_button_button_up"]

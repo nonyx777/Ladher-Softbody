@@ -16,7 +16,10 @@ var armadillo_tet_array_constructor: TetArrayConstructor
 var armadillo_mesh_instance: MeshInstance3D
 
 var push_force: Vector3 = Vector3(0, 0, 0)
+var button_pressed: bool = false
 var dt: float = (1.0 / 60.0)
+
+@onready var button: Button = $Control/Panel/Button
 
 func bunny_init() -> void:
 	bunny_tet_mesh = TetGenMesh.new()
@@ -116,7 +119,6 @@ func _ready():
 	armadillo_init()
 
 func _process(delta: float):
-	push_force *= 0.0
 	if Input.is_key_pressed(KEY_S):
 		push_force += Vector3(5, 0, 0)
 	if Input.is_key_pressed(KEY_W):
@@ -127,7 +129,7 @@ func _process(delta: float):
 		push_force += Vector3(0, 0, 5)
 		
 	push_force = push_force.normalized() * 5
-	if Input.is_key_pressed(KEY_SPACE):
+	if Input.is_key_pressed(KEY_SPACE) || button_pressed:
 		push_force += Vector3(0, 12, 0)
 	
 	var force: Vector3 = Vector3(0, -9.8, 0) + push_force
@@ -156,9 +158,18 @@ func _process(delta: float):
 	
 	var armadillo_updated_mesh: Mesh = armadillo_tet_mesh.update_mesh(armadillo_solver.get_pos())
 	armadillo_mesh_instance.mesh = armadillo_updated_mesh
+	push_force *= 0.0
 
 
 func _on_compliance_value_changed(value: float) -> void:
 	suzanne_solver.set_edge_compliance(value)
 	bunny_solver.set_edge_compliance(value)
 	armadillo_solver.set_edge_compliance(value)
+
+
+func _on_button_button_down() -> void:
+	button_pressed = true
+
+
+func _on_button_button_up() -> void:
+	button_pressed = false
