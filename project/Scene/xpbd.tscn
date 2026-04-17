@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://bhtq6i2xb8rfm"]
+[gd_scene load_steps=9 format=3 uid="uid://bhtq6i2xb8rfm"]
 
 [ext_resource type="Script" uid="uid://cmtewiygavg7a" path="res://Script/xpbd.gd" id="1_jegph"]
+[ext_resource type="Script" uid="uid://bxpqpkmooaupb" path="res://Script/label_info.gd" id="2_oabi1"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jegph"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -52,46 +53,43 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.57906, 0)
 mesh = SubResource("BoxMesh_jegph")
 skeleton = NodePath("../..")
 
-[node name="Control" type="Control" parent="."]
-clip_contents = true
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="Label" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
 grow_horizontal = 2
-grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 2
+script = ExtResource("2_oabi1")
 
-[node name="Panel" type="Panel" parent="Control"]
-layout_mode = 1
-offset_left = 17.39
-offset_right = 17.39
+[node name="Compliance" type="HSlider" parent="."]
+offset_left = 17.0
+offset_top = 226.0
+offset_right = 391.0
+offset_bottom = 250.0
+max_value = 0.003
+step = 0.001
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Control/Panel"]
-layout_mode = 0
-offset_right = 300.0
-offset_bottom = 184.0
+[node name="Button" type="Button" parent="."]
+offset_left = 957.895
+offset_top = 508.76
+offset_right = 1074.9
+offset_bottom = 580.76
+theme_override_font_sizes/font_size = 46
+text = "Push"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_left = 16.62
+offset_right = 391.62
+offset_bottom = 226.0
 theme_override_font_sizes/normal_font_size = 41
 text = "Controls	
     - WASD
     - Space"
 
-[node name="Compliance" type="HSlider" parent="Control/Panel"]
-layout_mode = 0
-offset_top = 149.0
-offset_right = 300.0
-offset_bottom = 234.0
-max_value = 0.003
-step = 0.001
-
-[node name="Button" type="Button" parent="Control/Panel"]
-layout_mode = 0
-offset_left = 885.61
-offset_top = 470.0
-offset_right = 1024.61
-offset_bottom = 549.0
-theme_override_font_sizes/font_size = 46
-text = "Push"
-
-[connection signal="value_changed" from="Control/Panel/Compliance" to="." method="_on_compliance_value_changed"]
-[connection signal="button_down" from="Control/Panel/Button" to="." method="_on_button_button_down"]
-[connection signal="button_up" from="Control/Panel/Button" to="." method="_on_button_button_up"]
+[connection signal="value_changed" from="Compliance" to="." method="_on_compliance_value_changed"]
+[connection signal="button_down" from="Button" to="." method="_on_button_button_down"]
+[connection signal="button_up" from="Button" to="." method="_on_button_button_up"]

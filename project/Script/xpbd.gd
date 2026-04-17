@@ -17,9 +17,9 @@ var armadillo_mesh_instance: MeshInstance3D
 
 var push_force: Vector3 = Vector3(0, 0, 0)
 var button_pressed: bool = false
-var dt: float = (1.0 / 60.0)
+var dt: float = (1.0 / 30.0)
 
-@onready var button: Button = $Control/Panel/Button
+@onready var button: Button = $Button
 
 func bunny_init() -> void:
 	bunny_tet_mesh = TetGenMesh.new()
@@ -118,7 +118,7 @@ func _ready():
 	suzanne_init()
 	armadillo_init()
 
-func _process(delta: float):
+func _process(_delta: float):
 	if Input.is_key_pressed(KEY_S):
 		push_force += Vector3(5, 0, 0)
 	if Input.is_key_pressed(KEY_W):
@@ -130,11 +130,11 @@ func _process(delta: float):
 		
 	push_force = push_force.normalized() * 5
 	if Input.is_key_pressed(KEY_SPACE) || button_pressed:
-		push_force += Vector3(0, 12, 0)
+		push_force += Vector3(0, 15, 0)
 	
-	var force: Vector3 = Vector3(0, -9.8, 0) + push_force
+	var force: Vector3 = Vector3(0, -11.0, 0) + push_force
 	
-	var substeps: float = 10
+	var substeps: float = 20
 	var sub_dt: float = dt / substeps
 	
 	for step in range(substeps):

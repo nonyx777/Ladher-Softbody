@@ -13,6 +13,7 @@ config_version=5
 config/name="Ladher-Softbody"
 run/main_scene="uid://bhtq6i2xb8rfm"
 config/features=PackedStringArray("4.4", "Forward Plus")
+run/max_fps=30
 config/icon="res://icon.svg"
 
 [display]
