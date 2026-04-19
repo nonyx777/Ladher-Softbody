@@ -3,6 +3,7 @@
 
 #include <godot_cpp/classes/node3d.hpp>
 #include <godot_cpp/classes/mesh_instance3d.hpp>
+#include <godot_cpp/classes/torus_mesh.hpp>
 #include <godot_cpp/classes/array_mesh.hpp>
 #include <godot_cpp/variant/packed_vector3_array.hpp>
 #include <godot_cpp/variant/packed_int32_array.hpp>
@@ -47,6 +48,12 @@ private:
     // Volume gradient order (cache as static array)
     static const int vol_id_order[4][3];
 
+    // Ref<MeshInstance3D> torus_mesh_inst;
+    // Ref<TorusMesh> torus_mesh;
+    Transform3D torus_transform;
+    float torus_inner_radius = 0.0f;
+    float torus_outer_radius = 0.0f;
+
 protected:
     static void _bind_methods();
 
@@ -54,18 +61,20 @@ public:
     SoftBodySolver();
     ~SoftBodySolver();
     
+    // Initialization
+    void assign_torus_mesh(Object* p_torus_mesh_inst, Object* p_torus_mesh);
+    
     // Core solver methods
     void solve_edges(double compliance, double dt);
     void solve_volumes(double compliance, double dt);
     double get_tet_volume(int tet_index);
-    
-    // Initialization
+    bool is_point_inside_torus(Vector3 pos);
     void compute_edge_rest_lengths();
     void compute_tet_rest_volumes();
     void pre_solve(double dt, Vector3 force);
     void post_solve(double dt);
     void solve(double dt);
-    
+
     // Getters/Setters
     void set_pos(const PackedVector3Array &p_pos);
     PackedVector3Array get_pos() const;

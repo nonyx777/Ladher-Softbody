@@ -31,6 +31,8 @@ void SoftBodySolver::_bind_methods() {
     ClassDB::bind_method(D_METHOD("pre_solve", "dt", "force"), &SoftBodySolver::pre_solve);
     ClassDB::bind_method(D_METHOD("post_solve", "dt"), &SoftBodySolver::post_solve);
     ClassDB::bind_method(D_METHOD("solve", "dt"), &SoftBodySolver::solve);
+    ClassDB::bind_method(D_METHOD("is_point_inside_torus", "point"), &SoftBodySolver::is_point_inside_torus);
+    ClassDB::bind_method(D_METHOD("assign_torus_mesh", "torus_mesh_inst", "torus_mesh"), &SoftBodySolver::assign_torus_mesh);
     
     ClassDB::bind_method(D_METHOD("set_pos", "pos"), &SoftBodySolver::set_pos);
     ClassDB::bind_method(D_METHOD("get_pos"), &SoftBodySolver::get_pos);
@@ -260,6 +262,23 @@ void SoftBodySolver::post_solve(double dt) {
 void SoftBodySolver::solve(double dt) {
     solve_edges(edge_compliance, dt);
     solve_volumes(volume_compliance, dt);
+}
+
+bool SoftBodySolver::is_point_inside_torus(Vector3 point){
+    float R = 1.225;
+    float tube_radius = (torus_outer_radius - torus_inner_radius) / 2.0;
+    Vector3 local = torus_transform.xform_inv(point);
+    float dist_xz = sqrt(local.x * local.x + local.z * local.z);
+    float dist_tube = abs(dist_xz - R);
+    return dist_tube * dist_tube + local.y * local.y <= tube_radius * tube_radius;
+}
+
+void SoftBodySolver::assign_torus_mesh(Object* p_torus_mesh_inst, Object* p_torus_mesh){
+    MeshInstance3D* mesh_inst = Object::cast_to<MeshInstance3D>(p_torus_mesh_inst);
+    TorusMesh* torus_mesh_ptr = Object::cast_to<TorusMesh>(p_torus_mesh);
+    torus_transform = mesh_inst->get_global_transform();
+    torus_inner_radius = torus_mesh_ptr->get_inner_radius();
+    torus_outer_radius = torus_mesh_ptr->get_outer_radius();
 }
 
 }

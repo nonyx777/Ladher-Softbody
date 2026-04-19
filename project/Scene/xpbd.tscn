@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bhtq6i2xb8rfm"]
+[gd_scene load_steps=10 format=3 uid="uid://bhtq6i2xb8rfm"]
 
 [ext_resource type="Script" uid="uid://cmtewiygavg7a" path="res://Script/xpbd.gd" id="1_jegph"]
 [ext_resource type="Script" uid="uid://bxpqpkmooaupb" path="res://Script/label_info.gd" id="2_oabi1"]
@@ -27,6 +27,10 @@ size = Vector3(10, 1, 10)
 lightmap_size_hint = Vector2i(104, 207)
 flip_faces = true
 size = Vector3(10, 15.14, 10)
+
+[sub_resource type="TorusMesh" id="TorusMesh_oabi1"]
+inner_radius = 0.797
+outer_radius = 1.593
 
 [node name="XPBD" type="Node3D"]
 script = ExtResource("1_jegph")
@@ -89,6 +93,10 @@ theme_override_font_sizes/normal_font_size = 41
 text = "Controls	
     - WASD
     - Space"
+
+[node name="Torus" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.01086, 0)
+mesh = SubResource("TorusMesh_oabi1")
 
 [connection signal="value_changed" from="Compliance" to="." method="_on_compliance_value_changed"]
 [connection signal="button_down" from="Button" to="." method="_on_button_button_down"]

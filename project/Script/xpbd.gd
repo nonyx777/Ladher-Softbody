@@ -21,6 +21,8 @@ var dt: float = (1.0 / 30.0)
 
 @onready var button: Button = $Button
 
+@onready var torus: MeshInstance3D = $Torus
+
 func bunny_init() -> void:
 	bunny_tet_mesh = TetGenMesh.new()
 	bunny_tet_mesh.load_from_base_name("res://Mesh/StanfordBunny/StanfordBunny")
