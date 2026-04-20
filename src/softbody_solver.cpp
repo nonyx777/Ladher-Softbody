@@ -248,6 +248,10 @@ void SoftBodySolver::pre_solve(double dt, Vector3 force) {
             pos_ptr[i] = prev_pos_ptr[i];
             pos_ptr[i].z = 5.0;
         }
+
+        if (is_point_inside_torus(pos_ptr[i])){
+            pos_ptr[i] = prev_pos_ptr[i];
+        }
     }
 }
 

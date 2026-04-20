@@ -52,6 +52,8 @@ func bunny_init() -> void:
 	bunny_solver.compute_tet_rest_volumes()
 	bunny_solver.set_edge_compliance(0.0)
 	bunny_solver.set_volume_compliance(0.0)
+	
+	bunny_solver.assign_torus_mesh(torus, torus.mesh)
 
 func suzanne_init() -> void:
 	suzanne_tet_mesh = TetGenMesh.new()
@@ -82,6 +84,8 @@ func suzanne_init() -> void:
 	suzanne_solver.compute_tet_rest_volumes()
 	suzanne_solver.set_edge_compliance(0.0)
 	suzanne_solver.set_volume_compliance(0.0)
+	
+	suzanne_solver.assign_torus_mesh(torus, torus.mesh)
 
 func armadillo_init():
 	armadillo_tet_mesh = TetGenMesh.new()
@@ -112,8 +116,8 @@ func armadillo_init():
 	armadillo_solver.compute_tet_rest_volumes()
 	armadillo_solver.set_edge_compliance(0.0)
 	armadillo_solver.set_volume_compliance(0.0)
-
-
+	
+	armadillo_solver.assign_torus_mesh(torus, torus.mesh)
 
 func _ready():
 	bunny_init()
