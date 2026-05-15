@@ -269,7 +269,7 @@ void SoftBodySolver::solve(double dt) {
 }
 
 bool SoftBodySolver::is_point_inside_torus(Vector3 point){
-    float R = 1.225;
+    float R = torus_inner_radius + (torus_outer_radius - torus_inner_radius) / 2.0;
     float tube_radius = (torus_outer_radius - torus_inner_radius) / 2.0;
     Vector3 local = torus_transform.xform_inv(point);
     float dist_xz = sqrt(local.x * local.x + local.z * local.z);
