@@ -31,7 +31,6 @@ void SoftBodySolver::_bind_methods() {
     ClassDB::bind_method(D_METHOD("pre_solve", "dt", "force"), &SoftBodySolver::pre_solve);
     ClassDB::bind_method(D_METHOD("post_solve", "dt"), &SoftBodySolver::post_solve);
     ClassDB::bind_method(D_METHOD("solve", "dt"), &SoftBodySolver::solve);
-    ClassDB::bind_method(D_METHOD("is_point_inside_torus", "point"), &SoftBodySolver::is_point_inside_torus);
     ClassDB::bind_method(D_METHOD("assign_torus_mesh", "torus_mesh_inst", "torus_mesh"), &SoftBodySolver::assign_torus_mesh);
     
     ClassDB::bind_method(D_METHOD("set_pos", "pos"), &SoftBodySolver::set_pos);
@@ -46,6 +45,9 @@ void SoftBodySolver::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_inv_mass"), &SoftBodySolver::get_inv_mass);
     ClassDB::bind_method(D_METHOD("compute_edge_rest_lengths"), &SoftBodySolver::compute_edge_rest_lengths);
     ClassDB::bind_method(D_METHOD("compute_tet_rest_volumes"), &SoftBodySolver::compute_tet_rest_volumes);
+
+    ClassDB::bind_method(D_METHOD("is_point_inside_torus", "point"), &SoftBodySolver::is_point_inside_torus);
+    ClassDB::bind_method(D_METHOD("torus_normal", "point"), &SoftBodySolver::torus_normal);
 
     ClassDB::add_property("SoftBodySolver", PropertyInfo(Variant::FLOAT, "edge_compliance"), 
                           "set_edge_compliance", "get_edge_compliance");
@@ -250,7 +252,14 @@ void SoftBodySolver::pre_solve(double dt, Vector3 force) {
         }
 
         if (is_point_inside_torus(pos_ptr[i])){
+            Vector3 n = torus_normal(pos_ptr[i]);
             pos_ptr[i] = prev_pos_ptr[i];
+            // compute the normal of the torus from the point of the interescting point
+                //  normal = torus_normal(pos_ptr[i])
+                //  pos_ptr[i] = prev_pos_ptr[i];
+                //  pos_ptr[i] += normal * scalar_amount
+            // push it back in the normal's direction
+            pos_ptr[i] += n * 0.01f;
         }
     }
 }
@@ -269,7 +278,7 @@ void SoftBodySolver::solve(double dt) {
 }
 
 bool SoftBodySolver::is_point_inside_torus(Vector3 point){
-    float R = torus_inner_radius + (torus_outer_radius - torus_inner_radius) / 2.0;
+    float R = torus_inner_radius + (torus_outer_radius - torus_inner_radius) * 0.5;
     float tube_radius = (torus_outer_radius - torus_inner_radius) / 2.0;
     Vector3 local = torus_transform.xform_inv(point);
     float dist_xz = sqrt(local.x * local.x + local.z * local.z);
@@ -283,6 +292,26 @@ void SoftBodySolver::assign_torus_mesh(Object* p_torus_mesh_inst, Object* p_toru
     torus_transform = mesh_inst->get_global_transform();
     torus_inner_radius = torus_mesh_ptr->get_inner_radius();
     torus_outer_radius = torus_mesh_ptr->get_outer_radius();
+}
+
+Vector3 SoftBodySolver::torus_normal(Vector3 point){
+    Vector3 p = torus_transform.xform_inv(point);
+    float R = torus_inner_radius + (torus_outer_radius - torus_inner_radius) * 0.5f;
+    Vector3 center;
+    float len_xz = sqrt(p.x * p.x + p.z * p.z);
+
+    if (len_xz > 1e-6f) {
+        center.x = p.x / len_xz * R;
+        center.y = 0.0f;
+        center.z = p.z / len_xz * R;
+    } else {
+        center.x = R;
+        center.y = 0.0f;
+        center.z = 0.0f;
+    }
+
+    Vector3 n = (p - center).normalized();
+    return torus_transform.basis.xform(n).normalized();
 }
 
 }

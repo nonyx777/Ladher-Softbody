@@ -64,11 +64,14 @@ public:
     // Initialization
     void assign_torus_mesh(Object* p_torus_mesh_inst, Object* p_torus_mesh);
     
+    // geometric methods
+    bool is_point_inside_torus(Vector3 pos);
+    Vector3 torus_normal(Vector3 point);
+
     // Core solver methods
     void solve_edges(double compliance, double dt);
     void solve_volumes(double compliance, double dt);
     double get_tet_volume(int tet_index);
-    bool is_point_inside_torus(Vector3 pos);
     void compute_edge_rest_lengths();
     void compute_tet_rest_volumes();
     void pre_solve(double dt, Vector3 force);
