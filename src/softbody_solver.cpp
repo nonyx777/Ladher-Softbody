@@ -49,6 +49,9 @@ void SoftBodySolver::_bind_methods() {
     ClassDB::bind_method(D_METHOD("is_point_inside_torus", "point"), &SoftBodySolver::is_point_inside_torus);
     ClassDB::bind_method(D_METHOD("torus_normal", "point"), &SoftBodySolver::torus_normal);
 
+    ClassDB::bind_method(D_METHOD("solve_collisions"), &SoftBodySolver::solve_collisions);
+    ClassDB::bind_method(D_METHOD("point_torus_collision"), &SoftBodySolver::point_torus_collision);
+
     ClassDB::add_property("SoftBodySolver", PropertyInfo(Variant::FLOAT, "edge_compliance"), 
                           "set_edge_compliance", "get_edge_compliance");
     ClassDB::add_property("SoftBodySolver", PropertyInfo(Variant::FLOAT, "volume_compliance"), 
@@ -250,17 +253,6 @@ void SoftBodySolver::pre_solve(double dt, Vector3 force) {
             pos_ptr[i] = prev_pos_ptr[i];
             pos_ptr[i].z = 5.0;
         }
-
-        if (is_point_inside_torus(pos_ptr[i])){
-            Vector3 n = torus_normal(pos_ptr[i]);
-            pos_ptr[i] = prev_pos_ptr[i];
-            // compute the normal of the torus from the point of the interescting point
-                //  normal = torus_normal(pos_ptr[i])
-                //  pos_ptr[i] = prev_pos_ptr[i];
-                //  pos_ptr[i] += normal * scalar_amount
-            // push it back in the normal's direction
-            pos_ptr[i] += n * 0.01f;
-        }
     }
 }
 
@@ -275,6 +267,7 @@ void SoftBodySolver::post_solve(double dt) {
 void SoftBodySolver::solve(double dt) {
     solve_edges(edge_compliance, dt);
     solve_volumes(volume_compliance, dt);
+    solve_collisions();
 }
 
 bool SoftBodySolver::is_point_inside_torus(Vector3 point){
@@ -309,9 +302,28 @@ Vector3 SoftBodySolver::torus_normal(Vector3 point){
         center.y = 0.0f;
         center.z = 0.0f;
     }
-
-    Vector3 n = (p - center).normalized();
+    Vector3 distance_from_tube_center = p - center;
+    float tube_radius = torus_outer_radius - torus_inner_radius;
+    this->penetration_depth = tube_radius - distance_from_tube_center.length();
+    Vector3 n = (distance_from_tube_center).normalized();
     return torus_transform.basis.xform(n).normalized();
+}
+
+void SoftBodySolver::solve_collisions(){
+    point_torus_collision();
+}
+
+void SoftBodySolver::point_torus_collision(){
+    for (int i = 0; i < num_particles; i++) {
+        if (inv_mass_ptr[i] == 0.0f) continue;
+
+        if (is_point_inside_torus(pos_ptr[i])) {
+            Vector3 n = torus_normal(pos_ptr[i]);
+            float delta = fabs(penetration_depth);
+
+            pos_ptr[i] += n * delta * 0.2f;
+        }
+    }
 }
 
 }

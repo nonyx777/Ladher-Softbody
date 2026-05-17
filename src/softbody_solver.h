@@ -53,6 +53,7 @@ private:
     Transform3D torus_transform;
     float torus_inner_radius = 0.0f;
     float torus_outer_radius = 0.0f;
+    float penetration_depth = 0.0f;
 
 protected:
     static void _bind_methods();
@@ -67,6 +68,10 @@ public:
     // geometric methods
     bool is_point_inside_torus(Vector3 pos);
     Vector3 torus_normal(Vector3 point);
+
+    // collision
+    void point_torus_collision();
+    void solve_collisions();
 
     // Core solver methods
     void solve_edges(double compliance, double dt);
